@@ -16,7 +16,7 @@ echo -e "\n${BLUE}Upload degli script sugli host ${HOSTS[@]} $NC"
 echo -e "${BLUE}(futuri worker e master k8s)$NC"
 
 for srv in ${HOSTS[@]} ; do
-   if [[ $srv != "master" ]]; then
+   if [[ $srv != "$KMASTER" ]]; then
       rsync $1 -Ptu -e "ssh -o StrictHostKeyChecking=no" $FILES $srv:$(basename $PWD)/ ;
    else
       rsync $1 -r -Ptu -e "ssh -o StrictHostKeyChecking=no" $FILES "project" $srv:$(basename $PWD)/ ;

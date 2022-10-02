@@ -17,8 +17,7 @@ logs_file="cluster-creation.logs"
 
 #-------------------------------------azure cluster vars--------------------------------
 
-# N.B.: NON modificare il nome "master". 
-# non metto i nomi direttamente nell'array perché così l'eventuale modifica dei nomi dei worker, grazie all'uso delle variabili, \
+# non metto i nomi direttamente nell'array perché così l'eventuale modifica dei nomi delle vm, grazie all'uso delle variabili, \
 # si ripercuote anche sugli array associativi, in automatico.
 master_host="master"
 worker1_host="worker1"

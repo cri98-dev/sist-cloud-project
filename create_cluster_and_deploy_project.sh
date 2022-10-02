@@ -14,6 +14,11 @@ cluster_config_user=$(cat ./azure_cluster_management/cluster_config.sh <(echo "e
 config_user=$(cat ./config.sh <(echo "echo \$KUSER") | bash)
 [[ $cluster_config_user != $config_user ]] && echo -e "${RED}$PWD/azure_cluster_management/cluster_config.sh and $PWD/config.sh have different values in username and KUSER. Unable to continue.$NC" && exit
 
+cluster_config_master=$(cat ./azure_cluster_management/cluster_config.sh <(echo "echo \$master_host") | bash)
+config_master=$(cat ./config.sh <(echo "echo \$KMASTER") | bash)
+[[ $cluster_config_master != $config_master ]] && echo -e "${RED}$PWD/azure_cluster_management/cluster_config.sh and $PWD/config.sh have different values in master_host and KMASTER. Unable to continue.$NC" && exit
+
+echo "$HOSTS" | grep $KMASTER &>/dev/null || { echo -e "${RED}KMASTER must be in HOSTS array. Unable to continue.$NC"; exit; }
 
 
 echo -e "$BLUE[TASK 1] Creating VMs cluster$NC"
@@ -41,7 +46,7 @@ echo -e "$BLUE...[Sleeping for 20s (starting at $(date +%T))]...$NC"
 sleep 20
 
 echo -e "$BLUE[TASK 4] Boot master$NC"
-ssh -t master << EOF
+ssh -t $KMASTER << EOF
     cd $(basename $PWD)
     sudo su
     ./prepare_reset_kube.sh
@@ -56,7 +61,7 @@ echo -e "$BLUE[TASK 5] Copy joincluster.sh into workers$NC"
 
 echo -e "$BLUE[TASK 6] Make workers join k8s cluster$NC"
 for n in ${HOSTS[@]}; do
-    if [[ $n != "master" ]]; then
+    if [[ $n != "$KMASTER" ]]; then
         ssh -t $n << EOF
             cd $(basename $PWD)
             sudo su
@@ -68,12 +73,12 @@ done
 
 
 echo -e "$BLUE[TASK 7] Create local registry and deploy project$NC"
-ssh master << EOF
+ssh $KMASTER << EOF
     cd $(basename $PWD)/project
 
     ./create_local_docker_registry.sh
 
-    sed "s/API_KEY_HERE/$FLICKR_API_KEY/g;s/API_SECRET_HERE/$FLICKR_API_SECRET/g" whole_cloud_project_template.yaml > whole_cloud_project.yaml
+    sed "s/API_KEY_HERE/$FLICKR_API_KEY/g;s/API_SECRET_HERE/$FLICKR_API_SECRET/g;s/master:/$KMASTER:/g" whole_cloud_project_template.yaml > whole_cloud_project.yaml
 
     kubectl apply -f whole_cloud_project.yaml
 

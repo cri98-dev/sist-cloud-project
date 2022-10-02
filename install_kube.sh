@@ -36,7 +36,7 @@ cat > /etc/docker/daemon.json << EOF
     "max-size": "100m"
   },
   "storage-driver": "overlay2",
-  "insecure-registries": [ "master:5000" ]
+  "insecure-registries": [ "$KMASTER:5000" ]
 }
 EOF
 mkdir -p /etc/systemd/system/docker.service.d
