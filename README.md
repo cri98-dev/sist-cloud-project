@@ -27,11 +27,11 @@ I also strongly recommend to read the Flickr APIs Terms of Use in order to be aw
 
 You can use the following url template:  
 
-http://\<master host public ip\>:8081/getDataset?class=\<class-id\>&max=\<max-urls-to-retrieve\>&min_conf=\<min-confidence-score-the-assigned-class-must-have-to-add-url-in-output-list\>
+http://\<master-host-public-ip\>:8081/getDataset?class=\<class-id\>&max=\<max-urls-to-retrieve\>&min_conf=\<min-confidence-score-the-assigned-class-must-have-to-add-url-in-output-list\>
 
 To get the full list of available class ids visit:
 
-http://\<master host public ip\>:8081/getClasses<br>
+http://\<master-host-public-ip\>:8081/getClasses<br>
   
 <h4>N.B.</h4>
 - Confidence score is a decimal number in [0.0, 1.0].
@@ -43,4 +43,4 @@ http://\<master host public ip\>:8081/getClasses<br>
   
 Simply visit:
 
-http://\<master host public ip\>:5601
+http://\<master-host-public-ip\>:5601
