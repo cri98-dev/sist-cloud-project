@@ -1,0 +1,115 @@
+version: "3.3"
+
+services: 
+    elasticsearch:
+        image: docker.elastic.co/elasticsearch/elasticsearch:7.13.3
+        container_name: elasticsearch
+        environment: 
+            - discovery.type=single-node
+            - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
+        ports: 
+            - "9200:9200"
+            - "9300:9300"
+        networks: 
+            - tap_project_net
+
+    kibana:
+        image: docker.elastic.co/kibana/kibana:7.13.3
+        container_name: kibana
+        environment: 
+            - "ELASTICSEARCH_HOSTS=http://elasticsearch:9200"
+        ports: 
+            - "5601:5601"
+        networks: 
+            - tap_project_net
+        depends_on: 
+            - elasticsearch
+    
+    torchvisionModel:
+        build: 
+            context: torchvisionModel_flask
+        image: torchvision_model_flask
+        container_name: torchvisionModel_flask
+        ports: 
+            - "8080:8080"
+        networks: 
+            - tap_project_net
+    
+    dataset_creator:
+        build: 
+            context: dataset_creator_flask
+        image: dataset_creator_flask
+        container_name: dataset_creator_flask
+        environment:
+            - "ELASTIC_HOST=http://elasticsearch:9200"
+        ports: 
+            - "8081:8081"
+        networks: 
+            - tap_project_net
+        depends_on: 
+            - elasticsearch
+    
+    logstash:
+        build: 
+            context: logstash
+        image: logstash
+        container_name: logstash
+        environment:
+            - "API_KEY=<api key here>"
+            - "KAFKA_SERVERS=http://kafkaserver:9092"
+            - "IMAGES_SIZE=c"
+            - "IMAGES_PER_REQUEST=5"
+        networks: 
+            - tap_project_net
+        depends_on: 
+            - kafkaServer
+    
+    kafkaServer:
+        build: 
+            context: kafkaServer
+            args:
+                ZOOKEEPER_HOST: "zookeeper:2181"
+                KAFKASERVER_HOST: "kafkaserver:9092"
+        image: kafka_server
+        container_name: kafkaserver
+        ports: 
+            - "9092:9092"
+        networks: 
+            - tap_project_net
+        depends_on: 
+            - zookeeper
+    
+    zookeeper:
+        build: 
+            context: zookeeper
+        image: zookeeper
+        container_name: zookeeper
+        ports: 
+            - "2181:2181"
+        networks: 
+            - tap_project_net
+        
+    spark:
+        build: 
+            context: spark
+        image: spark
+        container_name: spark
+        environment:
+            - "CLASSIFIER_HOST=http://torchvisionModel_flask:8080"
+            - "KAFKA_SERVER=http://kafkaserver:9092"
+            - "ELASTIC_HOST=http://elasticsearch:9200"
+            - "API_KEY=<api key here>"
+            - "API_SECRET=<api secret here>"
+            - "IMAGES_SIZE=c"
+        ports: 
+            - "4040:4040"
+        networks: 
+            - tap_project_net
+        depends_on: 
+            - kafkaServer
+            - torchvisionModel
+            - elasticsearch
+
+networks: 
+    tap_project_net:
+        driver: bridge

@@ -1,0 +1,1 @@
+passo ZOOKEEPER_HOST e KAFKASERVER_HOST come arg anziché come environment perchè ho bisogno di quei valore già dentro il dockerfile, e non solo dopo, dentro il container.

@@ -1,0 +1,520 @@
+---
+apiVersion: v1
+kind: Service
+metadata:
+  annotations:
+    kompose.cmd: kompose convert
+    kompose.version: 1.26.1 (a9d05d509)
+  creationTimestamp: null
+  labels:
+    io.kompose.service: dataset-creator
+  name: dataset-creator
+spec:
+  type: NodePort
+  ports:
+    - name: "8081"
+      port: 8081
+      targetPort: 8081
+  selector:
+    io.kompose.service: dataset-creator
+status:
+  loadBalancer: {}
+
+---
+
+apiVersion: v1
+kind: Service
+metadata:
+  annotations:
+    kompose.cmd: kompose convert
+    kompose.version: 1.26.1 (a9d05d509)
+  creationTimestamp: null
+  labels:
+    io.kompose.service: elasticsearch
+  name: elasticsearch
+spec:
+  ports:
+    - name: "9200"
+      port: 9200
+      targetPort: 9200
+    - name: "9300"
+      port: 9300
+      targetPort: 9300
+  selector:
+    io.kompose.service: elasticsearch
+status:
+  loadBalancer: {}
+
+---
+
+apiVersion: v1
+kind: Service
+metadata:
+  annotations:
+    kompose.cmd: kompose convert
+    kompose.version: 1.26.1 (a9d05d509)
+  creationTimestamp: null
+  labels:
+    io.kompose.service: kafkaserver
+  name: kafkaserver
+spec:
+  ports:
+    - name: "9092"
+      port: 9092
+      targetPort: 9092
+  selector:
+    io.kompose.service: kafkaserver
+status:
+  loadBalancer: {}
+
+---
+
+apiVersion: v1
+kind: Service
+metadata:
+  annotations:
+    kompose.cmd: kompose convert
+    kompose.version: 1.26.1 (a9d05d509)
+  creationTimestamp: null
+  labels:
+    io.kompose.service: kibana
+  name: kibana
+spec:
+  type: NodePort
+  ports:
+    - name: "5601"
+      port: 5601
+      targetPort: 5601
+  selector:
+    io.kompose.service: kibana
+status:
+  loadBalancer: {}
+
+---
+
+apiVersion: v1
+kind: Service
+metadata:
+  annotations:
+    kompose.cmd: kompose convert
+    kompose.version: 1.26.1 (a9d05d509)
+  creationTimestamp: null
+  labels:
+    io.kompose.service: spark
+  name: spark
+spec:
+  ports:
+    - name: "4040"
+      port: 4040
+      targetPort: 4040
+  selector:
+    io.kompose.service: spark
+status:
+  loadBalancer: {}
+
+---
+
+apiVersion: v1
+kind: Service
+metadata:
+  annotations:
+    kompose.cmd: kompose convert
+    kompose.version: 1.26.1 (a9d05d509)
+  creationTimestamp: null
+  labels:
+    io.kompose.service: torchvisionmodel
+  name: torchvisionmodel
+spec:
+  ports:
+    - name: "8080"
+      port: 8080
+      targetPort: 8080
+  selector:
+    io.kompose.service: torchvisionmodel
+status:
+  loadBalancer: {}
+
+---
+
+apiVersion: v1
+kind: Service
+metadata:
+  annotations:
+    kompose.cmd: kompose convert
+    kompose.version: 1.26.1 (a9d05d509)
+  creationTimestamp: null
+  labels:
+    io.kompose.service: zookeeper
+  name: zookeeper
+spec:
+  ports:
+    - name: "2181"
+      port: 2181
+      targetPort: 2181
+  selector:
+    io.kompose.service: zookeeper
+status:
+  loadBalancer: {}
+
+---
+
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  creationTimestamp: null
+  name: tap-project-net
+spec:
+  ingress:
+    - from:
+        - podSelector:
+            matchLabels:
+              io.kompose.network/tap_project_net: "true"
+  podSelector:
+    matchLabels:
+      io.kompose.network/tap_project_net: "true"
+
+---
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  annotations:
+    kompose.cmd: kompose convert
+    kompose.version: 1.26.1 (a9d05d509)
+  creationTimestamp: null
+  labels:
+    io.kompose.service: zookeeper
+  name: zookeeper
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      io.kompose.service: zookeeper
+      app: cloud-tap-project
+  strategy: {}
+  template:
+    metadata:
+      annotations:
+        kompose.cmd: kompose convert
+        kompose.version: 1.26.1 (a9d05d509)
+      creationTimestamp: null
+      labels:
+        io.kompose.network/tap_project_net: "true"
+        io.kompose.service: zookeeper
+        app: cloud-tap-project
+    spec:
+      containers:
+        - image: master:5000/zookeeper:v1.0
+          name: zookeeper
+          ports:
+            - containerPort: 2181
+          resources: {}
+      restartPolicy: Always
+status: {}
+
+---
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  annotations:
+    kompose.cmd: kompose convert
+    kompose.version: 1.26.1 (a9d05d509)
+  creationTimestamp: null
+  labels:
+    io.kompose.service: dataset-creator
+  name: dataset-creator
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      io.kompose.service: dataset-creator
+      app: cloud-tap-project
+  strategy: {}
+  template:
+    metadata:
+      annotations:
+        kompose.cmd: kompose convert
+        kompose.version: 1.26.1 (a9d05d509)
+      creationTimestamp: null
+      labels:
+        io.kompose.network/tap_project_net: "true"
+        io.kompose.service: dataset-creator
+        app: cloud-tap-project
+    spec:
+      containers:
+        - env:
+            - name: ELASTIC_HOST
+              value: http://elasticsearch:9200
+          image: master:5000/dataset_creator_flask:v1.0
+          name: dataset-creator-flask
+          ports:
+            - containerPort: 8081
+          resources: {}
+      restartPolicy: Always
+status: {}
+
+---
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  annotations:
+    kompose.cmd: kompose convert
+    kompose.version: 1.26.1 (a9d05d509)
+  creationTimestamp: null
+  labels:
+    io.kompose.service: elasticsearch
+  name: elasticsearch
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      io.kompose.service: elasticsearch
+      app: cloud-tap-project
+  strategy: {}
+  template:
+    metadata:
+      annotations:
+        kompose.cmd: kompose convert
+        kompose.version: 1.26.1 (a9d05d509)
+      creationTimestamp: null
+      labels:
+        io.kompose.network/tap_project_net: "true"
+        io.kompose.service: elasticsearch
+        app: cloud-tap-project
+    spec:
+      containers:
+        - env:
+            - name: ES_JAVA_OPTS
+              value: -Xms512m -Xmx512m
+            - name: discovery.type
+              value: single-node
+          image: docker.elastic.co/elasticsearch/elasticsearch:7.13.3
+          name: elasticsearch
+          ports:
+            - containerPort: 9200
+            - containerPort: 9300
+          resources: {}
+      restartPolicy: Always
+status: {}
+
+---
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  annotations:
+    kompose.cmd: kompose convert
+    kompose.version: 1.26.1 (a9d05d509)
+  creationTimestamp: null
+  labels:
+    io.kompose.service: kafkaserver
+  name: kafkaserver
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      io.kompose.service: kafkaserver
+      app: cloud-tap-project
+  strategy: {}
+  template:
+    metadata:
+      annotations:
+        kompose.cmd: kompose convert
+        kompose.version: 1.26.1 (a9d05d509)
+      creationTimestamp: null
+      labels:
+        io.kompose.network/tap_project_net: "true"
+        io.kompose.service: kafkaserver
+        app: cloud-tap-project
+    spec:
+      containers:
+        - image: master:5000/kafka_server:v1.0
+          name: kafkaserver
+          ports:
+            - containerPort: 9092
+          resources: {}
+      restartPolicy: Always
+status: {}
+
+---
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  annotations:
+    kompose.cmd: kompose convert
+    kompose.version: 1.26.1 (a9d05d509)
+  creationTimestamp: null
+  labels:
+    io.kompose.service: kibana
+  name: kibana
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      io.kompose.service: kibana
+      app: cloud-tap-project
+  strategy: {}
+  template:
+    metadata:
+      annotations:
+        kompose.cmd: kompose convert
+        kompose.version: 1.26.1 (a9d05d509)
+      creationTimestamp: null
+      labels:
+        io.kompose.network/tap_project_net: "true"
+        io.kompose.service: kibana
+        app: cloud-tap-project
+    spec:
+      containers:
+        - env:
+            - name: ELASTICSEARCH_HOSTS
+              value: http://elasticsearch:9200
+          image: docker.elastic.co/kibana/kibana:7.13.3
+          name: kibana
+          ports:
+            - containerPort: 5601
+          resources: {}
+      restartPolicy: Always
+status: {}
+
+---
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  annotations:
+    kompose.cmd: kompose convert
+    kompose.version: 1.26.1 (a9d05d509)
+  creationTimestamp: null
+  labels:
+    io.kompose.service: logstash
+  name: logstash
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      io.kompose.service: logstash
+      app: cloud-tap-project
+  strategy: {}
+  template:
+    metadata:
+      annotations:
+        kompose.cmd: kompose convert
+        kompose.version: 1.26.1 (a9d05d509)
+      creationTimestamp: null
+      labels:
+        io.kompose.network/tap_project_net: "true"
+        io.kompose.service: logstash
+        app: cloud-tap-project
+    spec:
+      containers:
+        - env:
+            - name: API_KEY
+              value: API_KEY_HERE
+            - name: IMAGES_PER_REQUEST
+              value: "5"
+            - name: IMAGES_SIZE
+              value: c
+            - name: KAFKA_SERVERS
+              value: http://kafkaserver:9092
+          image: master:5000/logstash:v1.0
+          name: logstash
+          resources: {}
+      restartPolicy: Always
+status: {}
+
+---
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  annotations:
+    kompose.cmd: kompose convert
+    kompose.version: 1.26.1 (a9d05d509)
+  creationTimestamp: null
+  labels:
+    io.kompose.service: spark
+  name: spark
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      io.kompose.service: spark
+      app: cloud-tap-project
+  strategy: {}
+  template:
+    metadata:
+      annotations:
+        kompose.cmd: kompose convert
+        kompose.version: 1.26.1 (a9d05d509)
+      creationTimestamp: null
+      labels:
+        io.kompose.network/tap_project_net: "true"
+        io.kompose.service: spark
+        app: cloud-tap-project
+    spec:
+      containers:
+        - env:
+            - name: API_KEY
+              value: API_KEY_HERE
+            - name: API_SECRET
+              value: API_SECRET_HERE
+            - name: CLASSIFIER_HOST
+              value: http://torchvisionmodel:8080
+            - name: ELASTIC_HOST
+              value: http://elasticsearch:9200
+            - name: IMAGES_SIZE
+              value: c
+            - name: KAFKA_SERVER
+              value: http://kafkaserver:9092
+          image: master:5000/spark:v1.0
+          name: spark
+          ports:
+            - containerPort: 4040
+          resources: {}
+      restartPolicy: Always
+status: {}
+
+---
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  annotations:
+    kompose.cmd: kompose convert
+    kompose.version: 1.26.1 (a9d05d509)
+  creationTimestamp: null
+  labels:
+    io.kompose.service: torchvisionmodel
+  name: torchvisionmodel
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      io.kompose.service: torchvisionmodel
+      app: cloud-tap-project
+  strategy: {}
+  template:
+    metadata:
+      annotations:
+        kompose.cmd: kompose convert
+        kompose.version: 1.26.1 (a9d05d509)
+      creationTimestamp: null
+      labels:
+        io.kompose.network/tap_project_net: "true"
+        io.kompose.service: torchvisionmodel
+        app: cloud-tap-project
+    spec:
+      containers:
+        - image: master:5000/torchvision_model_flask:v1.0
+          name: torchvisionmodel
+          ports:
+            - containerPort: 8080
+          resources: {}
+      restartPolicy: Always
+status: {}
+
+
