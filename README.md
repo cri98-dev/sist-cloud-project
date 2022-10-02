@@ -6,7 +6,7 @@ This is the project realized for the exam of the subject "Sistemi Cloud e IoT" (
 
 <img src='cloud_project_architecture.png'>
 
-The application above will run on a 3 Azure VMs cluster, in a user-created Kubernetes cluster of 3 nodes (1 master, 2 workers).
+The application above will run on a 3 Azure VMs cluster, in a user-created Kubernetes cluster of 3 nodes (1 master, 2 workers). Calico in VXLAN mode will be used by K8s as networking plugin.
 
 # Disclaimer
 
@@ -22,7 +22,13 @@ I also strongly recommend to read the Flickr APIs Terms of Use in order to be aw
 4. Enjoy!
 
 <b>If you want to customize clusters settings, edit </b>azure_cluster_management/cluster_config.sh<b> and </b>config.sh<b> files before executing the 3rd point of the list above</b>.
-  
+
+# How to stop this project?
+Simply execute azure_cluster_management/destroy-azure-cluster.sh script.
+
+<b>N.B.:</b> This will destroy all Azure cluster resources created by create_cluster_and_deploy_project.sh script.
+
+
 # How to query Dataset Creator microservice?
 
 You can use the following url template:  
@@ -34,7 +40,7 @@ To get the full list of available class ids visit:
 http://\<master-host-public-ip\>:8081/getClasses<br>
 
 <h4>N.B.:</h4>
-- master-host-public-ip will be printed at the end of the execution of create_cluster_and_deploy_project.sh script. However, you can always retrieve it by running the script azure_cluster_management/get-cluster-hosts-IPs.sh<br>
+- master-host-public-ip will be printed at the end of the execution of create_cluster_and_deploy_project.sh script. However, you can always retrieve it by exectuing the script azure_cluster_management/get-cluster-hosts-IPs.sh.<br>
 - Confidence score is a decimal number in [0.0, 1.0].
 
   - Setting it to a negative number would cause images with whatever class confidence score to be included in the output list.  
