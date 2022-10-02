@@ -83,7 +83,7 @@ ssh $KMASTER << EOF
     kubectl apply -f whole_cloud_project.yaml
 
     s=300
-    echo -e "$BLUE...[sleeping for \${s}s (starting at $(date +%T))]...$NC"
+    echo -e "$BLUE...[sleeping for \${s}s (starting at \$(date +%T))]...$NC"
     sleep \$s
 
     echo -e "${BLUE}Executing kubectl port-forward command in background to expose public endpoints$NC"
