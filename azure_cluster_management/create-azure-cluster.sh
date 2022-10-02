@@ -17,6 +17,15 @@ for h in ${NSGS[@]}; do
   echo "${!nsgNamesToPorts[@]}" | grep $h &>/dev/null || { echo -e "${RED}Not all nsgs in NSGS array have a correspondig value in nsgNamesToPorts array. Unable to continue.$NC"; exit; }
 done
 
+# Check all required components will be created.
+for h in ${HOSTNAMES[@]}; do
+  echo "${SUBNETS[@]}" | grep ${vmNamesToSubnets[$h]} &>/dev/null || { echo -e "${RED}Not all subnets required by hosts in HOSTNAMES array (with the current configuration) are in SUBNETS array. Unable to continue.$NC"; exit; }
+done
+
+for h in ${SUBNETS[@]}; do
+  echo "${NSGS[@]}" | grep ${subnetNamesToNsgs[$h]} &>/dev/null || { echo -e "${RED}Not all nsgs required by subnets in SUBNETS array, in turn required by hosts in HOSTNAMES array (with the current configuration), are in NSGS array. Unable to continue.$NC"; exit; }
+done
+
 
 [[ -f $logs_file ]] && rm $logs_file
 
