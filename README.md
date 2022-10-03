@@ -8,6 +8,10 @@ This is the project realized for the exam of the subject "Sistemi Cloud e IoT" (
 
 The application above will run on a 3 Azure VMs cluster, in a user-created Kubernetes cluster of 3 nodes (1 master, 2 workers). Calico in VXLAN mode will be used by K8s as networking plugin.
 
+Every component of the picture above will run in a different pod. (There is also another component not shown in the schema above, zookeeper, needed by kafka. This will run in a separte pod as well).
+
+The master host will also host a local Docker registry where most of the Docker images (the custom ones) this project is made up of will be pushed, and downloaded as needed by worker nodes. This registry will only be reachable by hosts in the same Azure vnet as master host's one.
+
 # Disclaimer
 
 <b><h3>This product uses the Flickr API but is not endorsed or certified by SmugMug, Inc.</h3></b>
