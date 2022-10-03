@@ -51,6 +51,11 @@ http://\<master-host-public-ip\>:8081/getClasses<br>
   - Setting it to a negative number would cause images with whatever class confidence score to be included in the output list.  
   - Setting it to a number greater than 1.0 would lead to an empty output list.
 
+- "class" is a mandatory parameter of the url.
+- "max" can be omitted. Its default value is 20.
+- "min_conf" can be omitted. Its default value is 0.6.
+
+
 # How to access Kibana GUI?
   
 Simply visit:
