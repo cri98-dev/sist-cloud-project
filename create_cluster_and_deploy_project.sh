@@ -93,9 +93,9 @@ ssh $KMASTER << EOF
         ps -aux | grep forward | grep dataset-creator &>/dev/null || { kubectl port-forward service/dataset-creator --address 0.0.0.0 8081 &>/dev/null & }
         ps -aux | grep forward | grep kibana &>/dev/null || { kubectl port-forward service/kibana --address 0.0.0.0 5601 &>/dev/null & }
         sleep 2
-    done &
+    done &>/dev/null &
 
-    echo -e "${GREEN}Use public ip \$(curl ifconfig.me) and ports 8081 (DatasetCreator) and 5601 (Kibana) to interact with the public endpoints of the app!$NC" 
+    echo -e "${GREEN}Use public ip \$(curl ifconfig.me) and ports 8081 (DatasetCreator) and 5601 (Kibana) to interact with the public endpoints of the app!$NC"
 EOF
 
 
