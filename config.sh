@@ -14,13 +14,13 @@ FLICKR_API_SECRET=
 
 KVERS=1.23.10-00
 
-KMASTER="master" # must match "master_host" env var value in ./azure_cluster_management/cluster_config.sh 
-HOSTS=($KMASTER worker1 worker2) # must match "HOSTNAMES" array in ./azure_cluster_management/cluster_config.sh 
+KMASTER="master"
+HOSTS=($KMASTER worker1 worker2) 
 
 # si presume su ognuno degli host vi sia l'utente $KUSER
 # che utilizzera` k8s e che, dal cliente, rsync permetta
 # di inviare file agli host (v. upload_scripts.sh)
-KUSER="cavia" # must match "username" env var value in ./azure_cluster_management/cluster_config.sh
+KUSER="cavia"
 
 # blocco di IP allocato per la rete dei Pod
 POD_NETWORK_CIDR="192.168.0.0/16"
