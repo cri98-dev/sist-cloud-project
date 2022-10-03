@@ -39,8 +39,9 @@ To get the full list of available class ids visit:
 
 http://\<master-host-public-ip\>:8081/getClasses<br>
 
-<h4>N.B.:</h4>
+<b>N.B.:</b>
 - master-host-public-ip will be printed at the end of the execution of create_cluster_and_deploy_project.sh script. However, you can always retrieve it by exectuing the script azure_cluster_management/get-cluster-hosts-IPs.sh.<br>
+
 - Confidence score is a decimal number in [0.0, 1.0].
 
   - Setting it to a negative number would cause images with whatever class confidence score to be included in the output list.  
@@ -51,3 +52,14 @@ http://\<master-host-public-ip\>:8081/getClasses<br>
 Simply visit:
 
 http://\<master-host-public-ip\>:5601
+
+# How to ssh into created VMs?
+
+Just type in a shell "ssh \<vm-name\>"
+
+<b>N.B.:</b>
+- VM names can be found:
+  
+  - in config.sh file, in the HOSTS array.
+  - in azure_cluster_management/cluster_config.sh, in the HOSTNAMES array.
+  - by simply typing "cat ~/.ssh/config" in a shell
