@@ -4,7 +4,7 @@ This is the project realized for the exam of the subject "Sistemi Cloud e IoT" (
 
 # Architecture
 
-<img src='cloud_project_architecture.png'>
+<img src='cloud_project_architecture.svg'>
 
 The application above will run on a 3 Azure VMs cluster, in a user-created Kubernetes cluster of 3 nodes (1 master, 2 workers). Calico in VXLAN mode will be used by K8s as networking plugin.
 
