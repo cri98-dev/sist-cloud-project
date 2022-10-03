@@ -59,11 +59,11 @@ http://\<master-host-public-ip\>:5601
 
 # How to ssh into created VMs?
 
-Just type in a shell "ssh \<vm-name\>"
+Just type in a shell "ssh \<vm-name\>".
 
 <b>N.B.:</b>
 - VM names can be found:
   
   - in config.sh file, in the HOSTS array.
   - in azure_cluster_management/cluster_config.sh, in the HOSTNAMES array.
-  - by simply typing "cat ~/.ssh/config" in a shell
+  - by simply typing "cat ~/.ssh/config" in a shell.
