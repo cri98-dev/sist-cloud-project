@@ -21,6 +21,7 @@ config_master=$(cat ./config.sh <(echo "echo \$KMASTER") | bash)
 echo "$HOSTS" | grep $KMASTER &>/dev/null || { echo -e "${RED}KMASTER must be in HOSTS array. Unable to continue.$NC"; exit; }
 
 
+
 echo -e "$BLUE[TASK 1] Creating VMs cluster$NC"
 cd azure_cluster_management
 ./create-azure-cluster.sh
@@ -88,8 +89,11 @@ ssh $KMASTER << EOF
 
     echo -e "${BLUE}Executing kubectl port-forward command in background to expose public endpoints$NC"
 
-    kubectl port-forward service/dataset-creator --address 0.0.0.0 8081 &>/dev/null &
-    kubectl port-forward service/kibana --address 0.0.0.0 5601 &>/dev/null &
+    while true; do 
+        ps -aux | grep forward | grep dataset-creator &>/dev/null || { kubectl port-forward service/dataset-creator --address 0.0.0.0 8081 &>/dev/null & }
+        ps -aux | grep forward | grep kibana &>/dev/null || { kubectl port-forward service/kibana --address 0.0.0.0 5601 &>/dev/null & }
+        sleep 2
+    done &
 
     echo -e "${GREEN}Use public ip \$(curl ifconfig.me) and ports 8081 (DatasetCreator) and 5601 (Kibana) to interact with the public endpoints of the app!$NC" 
 EOF
