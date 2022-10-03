@@ -25,7 +25,7 @@ I also strongly recommend to read the Flickr APIs Terms of Use in order to be aw
 3. Run './create_cluster_and_deploy_project.sh' command in main folder.
 4. Enjoy!
 
-<b>If you want to customize clusters settings, edit </b>azure_cluster_management/cluster_config.sh<b> and </b>config.sh<b> files before executing the 3rd point of the list above</b>.
+If you want to customize clusters settings, edit <b>azure_cluster_management/cluster_config.sh</b> and <b>config.sh</b> files before executing the 3rd point of the list above.
 
 # How to stop this project?
 Simply execute azure_cluster_management/destroy-azure-cluster.sh script.
