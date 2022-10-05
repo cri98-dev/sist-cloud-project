@@ -6,11 +6,17 @@ This is the project realized for the exam of the subject "Sistemi Cloud e IoT" (
 
 <img src='cloud_project_architecture.svg'>
 
-The application above will run on a 3 Azure VMs cluster, in a user-created Kubernetes cluster of 3 nodes (1 master, 2 workers). Calico in VXLAN mode will be used by K8s as networking plugin.
+The application above will run on a 3 Azure VMs cluster, in a user-created Kubernetes cluster of 3 nodes (1 master, 2 workers). Calico in VXLAN mode will be used by K8s as networking plugin. 
 
-Every component of the picture above will run in a different pod. (There is also another component not shown in the schema above, zookeeper, needed by kafka. This will run in a separte pod as well).
+Every component of the app will run in a different pod. (There is also another component not shown in the schema above, zookeeper, needed by kafka. This will run in a separte pod as well).
 
-The master host will also host a local Docker registry where most of the Docker images (the custom ones) this project is made up of will be pushed, and downloaded as needed by worker nodes. This registry will only be reachable by hosts in the same Azure vnet as master host's one.
+The master host will also serve as entrypoint for public endpoints and host a local Docker registry where most of the Docker images (the custom ones) this project is made up of will be pushed (and downloaded as needed by worker nodes). This registry will only be reachable by hosts in the same Azure vnet as master host's one. A scheme of such configuration is shown in the following image:
+
+<img src='diagramma_infrastrutturale.png'>
+
+
+
+
 
 # Disclaimer
 
