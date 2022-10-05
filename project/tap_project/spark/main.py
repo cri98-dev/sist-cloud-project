@@ -20,8 +20,6 @@ elastic_index = "tap_project"
 api_key = os.getenv('API_KEY')
 api_secret = os.getenv('API_SECRET')
 size = os.getenv('IMAGES_SIZE')
-recently_processed_ids = []
-cache_len = 30
 
 
 def getToken(api_key, api_secret, response_format="parsed-json"):
@@ -126,15 +124,13 @@ def create_es_index():
 # ogni "row" è un oggetto json che contiene dettagli di immagini retrieved da una sola call all'api rest di flickr
 def extract_info(row: DataFrame):
   global size
-  global recently_processed_ids
-  global cache_len
   photos = json.loads(row['raw_data'])['photos']['photo']
 
   photos_info = {'photo_id':[], 'owner_id':[], 'title':[], 'public': [], 'url':[],\
                 'width':[], 'height':[]}
 
   for photo in photos:
-    if photo['id'] not in recently_processed_ids and bool(photo['ispublic']) and f'url_{size}' in photo:
+    if bool(photo['ispublic']) and f'url_{size}' in photo:
       photos_info['photo_id'].append(photo['id'])
       photos_info['owner_id'].append(photo['owner'])
       photos_info['title'].append(photo['title'])
@@ -143,11 +139,7 @@ def extract_info(row: DataFrame):
       photos_info['width'].append(photo[f'width_{size}'])
       photos_info['height'].append(photo[f'height_{size}'])
 
-    recently_processed_ids.append(photo['id'])
-
   photos_info['ingestion_timestamp'] = [row['timestamp']]*len(photos_info['photo_id'])
-
-  recently_processed_ids = recently_processed_ids[-cache_len:]
 
   return pd.DataFrame(photos_info)
 
