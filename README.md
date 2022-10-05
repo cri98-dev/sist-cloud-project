@@ -30,13 +30,13 @@ I also strongly recommend to read the Flickr APIs Terms of Use in order to be aw
 
 1. Install Azure CLI and do login.
 2. Set FLICKR_API_KEY and FLICKR_API_SECRET env variables value in config.sh file.
-3. Run './create_cluster_and_deploy_project.sh' command in main folder.
+3. Execute create_cluster_and_deploy_project.sh script.
 4. Enjoy!
 
 If you want to customize clusters settings, edit <b>azure_cluster_management/cluster_config.sh</b> and <b>config.sh</b> files before executing the 3rd point of the list above.
 
 # How to stop this project?
-Simply execute azure_cluster_management/destroy-azure-cluster.sh script.
+Simply cd into azure_cluster_management folder and execute destroy-azure-cluster.sh script.
 
 <b>N.B.:</b> This will destroy all Azure cluster resources created by create_cluster_and_deploy_project.sh script.
 
@@ -52,7 +52,7 @@ To get the full list of available class ids visit:
 http://\<master-host-public-ip\>:8081/getClasses<br>
 
 <b>N.B.:</b>
-- master-host-public-ip will be printed at the end of the execution of create_cluster_and_deploy_project.sh script. However, you can always retrieve it by exectuing the script azure_cluster_management/get-cluster-hosts-IPs.sh.<br>
+- master-host-public-ip will be printed at the end of the execution of create_cluster_and_deploy_project.sh script. However, you can always retrieve it by executing the script get-cluster-hosts-IPs.sh from within the azure_cluster_management folder.<br>
 
 - Confidence score is a decimal number in [0.0, 1.0].
 
@@ -60,8 +60,8 @@ http://\<master-host-public-ip\>:8081/getClasses<br>
   - Setting it to a number greater than 1.0 would lead to an empty output list.
 
 - "class" is a mandatory parameter of the url.
-- "max" can be omitted. Its default value is 20.
-- "min_conf" can be omitted. Its default value is 0.6.
+- "max" can be omitted. It defaults to 20.
+- "min_conf" can be omitted. It defaults to 0.6.
 
 
 # How to access Kibana GUI?
@@ -78,5 +78,5 @@ Just type in a shell "ssh \<vm-name\>".
 - VM names can be found:
   
   - in config.sh file, in the HOSTS array.
-  - in azure_cluster_management/cluster_config.sh, in the HOSTNAMES array.
+  - in azure_cluster_management/cluster_config.sh file, in the HOSTNAMES array.
   - by simply typing "cat ~/.ssh/config" in a shell.
